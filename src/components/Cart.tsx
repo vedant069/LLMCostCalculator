@@ -2,7 +2,7 @@ import React from 'react';
 import { ShoppingCart, X, ExternalLink } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { llmProviders } from '../data/llm-providers';
-import { providers as speechProviders } from '../data/providers';
+import { speechProviders } from '../data/providers';
 
 export function Cart() {
   const { items, removeFromCart, total } = useCart();

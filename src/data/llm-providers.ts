@@ -143,6 +143,7 @@ export const llmProviders: LLMProvider[] = [
     id: 'aws-ai21',
     name: 'AWS (AI21 Labs)',
     type: 'llm',
+    pricingUrl: 'https://aws.amazon.com/bedrock/pricing/',
     models: [
       {
         id: 'jamba-1-5-large',
@@ -190,6 +191,7 @@ export const llmProviders: LLMProvider[] = [
     id: 'aws-anthropic',
     name: 'AWS (Anthropic)',
     type: 'llm',
+    pricingUrl: 'https://aws.amazon.com/bedrock/pricing/',
     models: [
       {
         id: 'claude-3-5-sonnet-aws',

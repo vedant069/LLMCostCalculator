@@ -66,8 +66,8 @@ export function Calculator() {
             .slice(0, showAllPrices ? undefined : 6)
             .map((result, index) => (
               <PricingCard
-                key={index}
-                provider={result.provider}
+                key={result.provider}
+                provider={speechProviders.find(p => p.name === result.provider)?.name || result.provider}
                 cost={result.cost}
                 isLowestPrice={index === 0}
                 description={speechProviders.find(p => p.name === result.provider)?.description}
