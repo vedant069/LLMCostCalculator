@@ -1,15 +1,43 @@
 import React, { useState } from 'react';
-import { Calculator as CalcIcon, ChevronDown, ChevronUp, MessageSquare } from 'lucide-react';
+import { Calculator as CalcIcon, ChevronDown, ChevronUp, MessageSquare, ShoppingCart } from 'lucide-react';
 import { llmProviders } from '../data/llm-providers';
 import { LLMPricingCard } from './LLMPricingCard';
 import { Provider } from '../types/pricing';
+import { useCart } from '../context/CartContext';
 
 export function LLMCalculator() {
   const [inputTokens, setInputTokens] = useState<number>(0);
   const [outputTokens, setOutputTokens] = useState<number>(0);
+  const [inputWords, setInputWords] = useState<number>(0);
+  const [outputWords, setOutputWords] = useState<number>(0);
   const [selectedProvider, setSelectedProvider] = useState<string>('all');
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [showAllPrices, setShowAllPrices] = useState<boolean>(false);
+  const [calculationType, setCalculationType] = useState<'tokens' | 'words'>('tokens');
+  const { addToCart } = useCart();
+
+  const WORDS_TO_TOKENS_RATIO = 1.25;
+
+  const handleInputChange = (value: number, type: 'input' | 'output') => {
+    const numValue = Math.max(0, value || 0);
+    if (calculationType === 'tokens') {
+      if (type === 'input') {
+        setInputTokens(numValue);
+        setInputWords(Math.round(numValue / WORDS_TO_TOKENS_RATIO));
+      } else {
+        setOutputTokens(numValue);
+        setOutputWords(Math.round(numValue / WORDS_TO_TOKENS_RATIO));
+      }
+    } else {
+      if (type === 'input') {
+        setInputWords(numValue);
+        setInputTokens(Math.round(numValue * WORDS_TO_TOKENS_RATIO));
+      } else {
+        setOutputWords(numValue);
+        setOutputTokens(Math.round(numValue * WORDS_TO_TOKENS_RATIO));
+      }
+    }
+  };
 
   const calculateCost = (provider: Provider) => {
     const results = [];
@@ -42,43 +70,96 @@ export function LLMCalculator() {
   return (
     <div className="space-y-6">
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-2">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Calculation Type
+            </label>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => setCalculationType('tokens')}
+                className={`px-4 py-1.5 text-sm rounded-lg transition-colors ${
+                  calculationType === 'tokens'
+                    ? 'bg-yellow-500 text-white'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`}
+              >
+                Tokens
+              </button>
+              <button
+                onClick={() => setCalculationType('words')}
+                className={`px-4 py-1.5 text-sm rounded-lg transition-colors ${
+                  calculationType === 'words'
+                    ? 'bg-yellow-500 text-white'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`}
+              >
+                Words
+              </button>
+            </div>
+          </div>
+          {calculationType === 'words' && (
+            <p className="text-sm text-gray-500 dark:text-gray-400 bg-blue-50 dark:bg-blue-900/20 p-2 rounded-lg">
+              1 word ≈ 1.25 tokens (Approximate conversion)
+            </p>
+          )}
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-              Input Tokens
+              Input {calculationType === 'tokens' ? 'Tokens' : 'Words'}
             </label>
-            <div className="relative">
-              <MessageSquare className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" />
-              <input
-                type="number"
-                min="0"
-                value={inputTokens}
-                onChange={(e) => setInputTokens(Math.max(0, parseInt(e.target.value) || 0))}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg 
-                          focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 
-                          dark:focus:ring-yellow-400 dark:focus:border-yellow-400
-                          bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm"
-                placeholder="Enter input tokens..."
-              />
+            <div className="relative flex flex-col">
+              <div className="relative">
+                <MessageSquare className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" />
+                <input
+                  type="number"
+                  min="0"
+                  value={calculationType === 'tokens' ? inputTokens : inputWords}
+                  onChange={(e) => handleInputChange(parseInt(e.target.value), 'input')}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg 
+                            focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 
+                            dark:focus:ring-yellow-400 dark:focus:border-yellow-400
+                            bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm"
+                  placeholder={`Enter input ${calculationType}...`}
+                />
+              </div>
+              <div className="h-6"> {/* Fixed height container for conversion text */}
+                {calculationType === 'words' && (
+                  <div className="text-xs text-gray-500 dark:text-gray-400 pl-2 mt-1">
+                    ≈ {inputTokens.toLocaleString()} tokens
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-              Output Tokens
+              Output {calculationType === 'tokens' ? 'Tokens' : 'Words'}
             </label>
-            <div className="relative">
-              <MessageSquare className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" />
-              <input
-                type="number"
-                min="0"
-                value={outputTokens}
-                onChange={(e) => setOutputTokens(Math.max(0, parseInt(e.target.value) || 0))}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg 
-                          focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 
-                          dark:focus:ring-yellow-400 dark:focus:border-yellow-400
-                          bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm"
-                placeholder="Enter output tokens..."
-              />
+            <div className="relative flex flex-col">
+              <div className="relative">
+                <MessageSquare className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" />
+                <input
+                  type="number"
+                  min="0"
+                  value={calculationType === 'tokens' ? outputTokens : outputWords}
+                  onChange={(e) => handleInputChange(parseInt(e.target.value), 'output')}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg 
+                            focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 
+                            dark:focus:ring-yellow-400 dark:focus:border-yellow-400
+                            bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm"
+                  placeholder={`Enter output ${calculationType}...`}
+                />
+              </div>
+              <div className="h-6"> {/* Fixed height container for conversion text */}
+                {calculationType === 'words' && (
+                  <div className="text-xs text-gray-500 dark:text-gray-400 pl-2 mt-1">
+                    ≈ {outputTokens.toLocaleString()} tokens
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           <div className="md:col-span-2">
@@ -110,14 +191,39 @@ export function LLMCalculator() {
             .slice(0, showAllPrices ? undefined : 6)
             .map((result, index) => (
               <LLMPricingCard
-                key={`${result.provider}-${result.model}-${result.version}`}
+                key={index}
                 provider={result.provider}
                 model={result.model}
                 version={result.version}
                 pricing={result.pricing}
                 cost={result.cost}
                 isLowestPrice={index === 0}
-              />
+              >
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {calculationType === 'tokens' 
+                        ? `${inputTokens.toLocaleString()} input, ${outputTokens.toLocaleString()} output tokens`
+                        : `${inputWords.toLocaleString()} input, ${outputWords.toLocaleString()} output words`}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => addToCart({
+                      type: 'llm',
+                      provider: result.provider,
+                      model: result.model,
+                      version: result.version,
+                      cost: result.cost,
+                      inputTokens,
+                      outputTokens
+                    })}
+                    className="px-3 py-1.5 text-sm bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg flex items-center gap-1 transition-colors"
+                  >
+                    <ShoppingCart className="w-4 h-4" />
+                    Add to Cart
+                  </button>
+                </div>
+              </LLMPricingCard>
             ))}
         </div>
         
@@ -138,10 +244,13 @@ export function LLMCalculator() {
 
       <button
         onClick={() => setShowDetails(!showDetails)}
-        className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 
-                  hover:text-gray-800 dark:hover:text-gray-200"
+        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 
+                  bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
+                  hover:bg-gray-50 dark:hover:bg-gray-700 
+                  rounded-lg transition-colors duration-200
+                  text-sm font-medium text-gray-700 dark:text-gray-300"
       >
-        {showDetails ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+        {showDetails ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         {showDetails ? 'Hide' : 'Show'} Pricing Details
       </button>
 

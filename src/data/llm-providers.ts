@@ -1,10 +1,19 @@
 import { Provider } from '../types/pricing';
 
-export const llmProviders: Provider[] = [
+export interface LLMProvider {
+  id: string;
+  name: string;
+  type: 'llm';
+  pricingUrl?: string;
+  models: Provider['models'];
+}
+
+export const llmProviders: LLMProvider[] = [
   {
     id: 'openai',
     name: 'OpenAI',
     type: 'llm',
+    pricingUrl: 'https://openai.com/api/pricing/',
     models: [
       {
         id: 'o1',
@@ -96,6 +105,7 @@ export const llmProviders: Provider[] = [
     id: 'anthropic',
     name: 'Anthropic',
     type: 'llm',
+    pricingUrl: 'https://www.anthropic.com/pricing#anthropic-api',
     models: [
       {
         id: 'claude-3-5-sonnet',
@@ -133,6 +143,7 @@ export const llmProviders: Provider[] = [
     id: 'aws-ai21',
     name: 'AWS (AI21 Labs)',
     type: 'llm',
+    pricingUrl: 'https://aws.amazon.com/bedrock/pricing/',
     models: [
       {
         id: 'jamba-1-5-large',
@@ -180,6 +191,7 @@ export const llmProviders: Provider[] = [
     id: 'aws-anthropic',
     name: 'AWS (Anthropic)',
     type: 'llm',
+    pricingUrl: 'https://aws.amazon.com/bedrock/pricing/',
     models: [
       {
         id: 'claude-3-5-sonnet-aws',
@@ -344,6 +356,7 @@ export const llmProviders: Provider[] = [
     id: 'groq',
     name: 'Groq',
     type: 'llm',
+    pricingUrl: 'https://groq.com/pricing/',
     models: [
       {
         id: 'llama-3-2-1b',
@@ -416,5 +429,12 @@ export const llmProviders: Provider[] = [
         ]
       }
     ]
+  },
+  {
+    id: 'aws',
+    name: 'AWS Bedrock',
+    type: 'llm',
+    pricingUrl: 'https://aws.amazon.com/bedrock/pricing/',
+    models: []
   }
 ];
