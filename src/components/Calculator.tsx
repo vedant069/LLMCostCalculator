@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { Clock, Calculator as CalcIcon, ChevronDown, ChevronUp } from 'lucide-react';
+import { Clock, Calculator as CalcIcon, ChevronDown, ChevronUp, ShoppingCart } from 'lucide-react';
 import { speechProviders } from '../data/providers';
 import { calculateAllCosts } from '../utils/calculateCost';
 import { PricingCard } from './PricingCard';
+import { useCart } from '../context/CartContext';
 
 export function Calculator() {
   const [minutes, setMinutes] = useState<number>(0);
   const [selectedProvider, setSelectedProvider] = useState<string>('all');
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [showAllPrices, setShowAllPrices] = useState<boolean>(false);
+  const { addToCart } = useCart();
   
   const results = calculateAllCosts(minutes, 
     selectedProvider === 'all' 
@@ -69,7 +71,28 @@ export function Calculator() {
                 cost={result.cost}
                 isLowestPrice={index === 0}
                 description={speechProviders.find(p => p.name === result.provider)?.description}
-              />
+              >
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Duration: {minutes} minutes
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => addToCart({
+                      type: 'speech-to-text',
+                      provider: result.provider,
+                      model: result.model,
+                      duration: minutes,
+                      cost: result.cost
+                    })}
+                    className="px-3 py-1 text-sm bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg flex items-center gap-1"
+                  >
+                    <ShoppingCart className="w-4 h-4" />
+                    Add to Cart
+                  </button>
+                </div>
+              </PricingCard>
             ))}
         </div>
         
@@ -88,9 +111,13 @@ export function Calculator() {
 
       <button
         onClick={() => setShowDetails(!showDetails)}
-        className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
+        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 
+                  bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
+                  hover:bg-gray-50 dark:hover:bg-gray-700 
+                  rounded-lg transition-colors duration-200
+                  text-sm font-medium text-gray-700 dark:text-gray-300"
       >
-        {showDetails ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+        {showDetails ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         {showDetails ? 'Hide' : 'Show'} Pricing Details
       </button>
 

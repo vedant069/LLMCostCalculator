@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Calculator as CalcIcon, ChevronDown, ChevronUp, MessageSquare } from 'lucide-react';
+import { Calculator as CalcIcon, ChevronDown, ChevronUp, MessageSquare, ShoppingCart } from 'lucide-react';
 import { llmProviders } from '../data/llm-providers';
 import { LLMPricingCard } from './LLMPricingCard';
 import { Provider } from '../types/pricing';
+import { useCart } from '../context/CartContext';
 
 export function LLMCalculator() {
   const [inputTokens, setInputTokens] = useState<number>(0);
@@ -10,6 +11,7 @@ export function LLMCalculator() {
   const [selectedProvider, setSelectedProvider] = useState<string>('all');
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [showAllPrices, setShowAllPrices] = useState<boolean>(false);
+  const { addToCart } = useCart();
 
   const calculateCost = (provider: Provider) => {
     const results = [];
@@ -45,7 +47,7 @@ export function LLMCalculator() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-              Input Tokens
+              Input Words
             </label>
             <div className="relative">
               <MessageSquare className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" />
@@ -58,13 +60,13 @@ export function LLMCalculator() {
                           focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 
                           dark:focus:ring-yellow-400 dark:focus:border-yellow-400
                           bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm"
-                placeholder="Enter input tokens..."
+                placeholder="Enter input words..."
               />
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-              Output Tokens
+              Output Words
             </label>
             <div className="relative">
               <MessageSquare className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" />
@@ -110,14 +112,37 @@ export function LLMCalculator() {
             .slice(0, showAllPrices ? undefined : 6)
             .map((result, index) => (
               <LLMPricingCard
-                key={`${result.provider}-${result.model}-${result.version}`}
+                key={index}
                 provider={result.provider}
                 model={result.model}
                 version={result.version}
                 pricing={result.pricing}
                 cost={result.cost}
                 isLowestPrice={index === 0}
-              />
+              >
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Tokens: {inputTokens} input, {outputTokens} output
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => addToCart({
+                      type: 'llm',
+                      provider: result.provider,
+                      model: result.model,
+                      version: result.version,
+                      cost: result.cost,
+                      inputTokens,
+                      outputTokens
+                    })}
+                    className="px-3 py-1 text-sm bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg flex items-center gap-1"
+                  >
+                    <ShoppingCart className="w-4 h-4" />
+                    Add to Cart
+                  </button>
+                </div>
+              </LLMPricingCard>
             ))}
         </div>
         
@@ -138,10 +163,13 @@ export function LLMCalculator() {
 
       <button
         onClick={() => setShowDetails(!showDetails)}
-        className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 
-                  hover:text-gray-800 dark:hover:text-gray-200"
+        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 
+                  bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
+                  hover:bg-gray-50 dark:hover:bg-gray-700 
+                  rounded-lg transition-colors duration-200
+                  text-sm font-medium text-gray-700 dark:text-gray-300"
       >
-        {showDetails ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+        {showDetails ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         {showDetails ? 'Hide' : 'Show'} Pricing Details
       </button>
 

@@ -6,9 +6,10 @@ interface PricingCardProps {
   cost: number;
   isLowestPrice?: boolean;
   description?: string;
+  children?: React.ReactNode;
 }
 
-export function PricingCard({ provider, cost, isLowestPrice, description }: PricingCardProps) {
+export function PricingCard({ provider, cost, isLowestPrice, description, children }: PricingCardProps) {
   return (
     <div 
       className={`
@@ -39,6 +40,11 @@ export function PricingCard({ provider, cost, isLowestPrice, description }: Pric
             </div>
           </div>
         </div>
+        {children && (
+          <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+            {children}
+          </div>
+        )}
       </div>
     </div>
   );
