@@ -23,80 +23,80 @@ export const llmProviders: LLMProvider[] = [
             name: 'On-Demand',
             pricing: { inputPrice: 15.00, outputPrice: 60.00 }
           },
-          {
-            name: '2024-12-17',
-            pricing: { inputPrice: 15.00, outputPrice: 60.00 }
-          },
+          // {
+          //   name: '2024-12-17',
+          //   pricing: { inputPrice: 15.00, outputPrice: 60.00 }
+          // },
           {
             name: 'preview',
             pricing: { inputPrice: 15.00, outputPrice: 60.00 }
           },
-          {
-            name: 'preview-2024-09-12',
-            pricing: { inputPrice: 15.00, outputPrice: 60.00 }
-          }
+          // {
+          //   name: 'preview-2024-09-12',
+          //   pricing: { inputPrice: 15.00, outputPrice: 60.00 }
+          // }
         ]
       },
       {
         id: 'gpt-4o',
-        name: 'GPT-4',
+        name: 'GPT-4o',
         versions: [
           {
             name: 'Default',
             pricing: { inputPrice: 2.50, outputPrice: 10.00 }
           },
-          {
-            name: '20-11-2024',
-            pricing: { inputPrice: 2.50, outputPrice: 10.00 }
-          },
-          {
-            name: '06-08-2024',
-            pricing: { inputPrice: 2.50, outputPrice: 10.00 }
-          },
-          {
-            name: 'Audio-Preview',
-            pricing: { inputPrice: 2.50, outputPrice: 10.00 }
-          },
-          {
-            name: 'Audio-Preview-2024-12-17',
-            pricing: { inputPrice: 2.50, outputPrice: 10.00 }
-          },
-          {
-            name: 'Audio-Preview-2024-10-01',
-            pricing: { inputPrice: 2.50, outputPrice: 10.00 }
-          }
+          // {
+          //   name: '20-11-2024',
+          //   pricing: { inputPrice: 2.50, outputPrice: 10.00 }
+          // },
+          // {
+          //   name: '06-08-2024',
+          //   pricing: { inputPrice: 2.50, outputPrice: 10.00 }
+          // },
+          // {
+          //   name: 'Audio-Preview',
+          //   pricing: { inputPrice: 2.50, outputPrice: 10.00 }
+          // },
+          // {
+          //   name: 'Audio-Preview-2024-12-17',
+          //   pricing: { inputPrice: 2.50, outputPrice: 10.00 }
+          // },
+          // {
+          //   name: 'Audio-Preview-2024-10-01',
+          //   pricing: { inputPrice: 2.50, outputPrice: 10.00 }
+          // }
         ]
       },
-      {
-        id: 'gpt-4o-2024-05-13',
-        name: 'GPT-4 (2024-05-13)',
-        versions: [
-          {
-            name: 'Default',
-            pricing: { inputPrice: 5.00, outputPrice: 15.00 }
-          }
-        ]
-      },
+      // {
+      //   id: 'gpt-4o-2024-05-13',
+      //   name: 'GPT-4 (2024-05-13)',
+      //   versions: [
+      //     {
+      //       name: 'Default',
+      //       pricing: { inputPrice: 5.00, outputPrice: 15.00 }
+      //     }
+      //   ]
+      // },
       {
         id: 'gpt-4o-mini',
-        name: 'GPT-4 Mini',
+        name: 'GPT-4o Mini',
         versions: [
           {
             name: 'Default',
             pricing: { inputPrice: 0.150, outputPrice: 0.600 }
-          },
-          {
-            name: '18-07-2024',
-            pricing: { inputPrice: 0.150, outputPrice: 0.600 }
-          },
-          {
-            name: 'Audio-Preview',
-            pricing: { inputPrice: 0.150, outputPrice: 0.600 }
-          },
-          {
-            name: 'Audio-Preview-2024-12-17',
-            pricing: { inputPrice: 0.150, outputPrice: 0.600 }
           }
+          // {
+          //   name: '18-07-2024',
+          //   pricing: { inputPrice: 0.150, outputPrice: 0.600 }
+          // },
+          // {
+          //   name: 'Audio-Preview',
+          //   pricing: { inputPrice: 0.150, outputPrice: 0.600 }
+          // },
+          // {
+          //   name: 'Audio-Preview-2024-12-17',
+          //   pricing: { inputPrice: 0.150, outputPrice: 0.600 }
+          // }
         ]
       }
     ]
@@ -330,26 +330,26 @@ export const llmProviders: LLMProvider[] = [
           }
         ]
       },
-      {
-        id: 'llama-2-chat-13b',
-        name: 'Llama 2 Chat (13B)',
-        versions: [
-          {
-            name: 'On-Demand',
-            pricing: { inputPrice: 0.75, outputPrice: 1.00 }
-          }
-        ]
-      },
-      {
-        id: 'llama-2-chat-70b',
-        name: 'Llama 2 Chat (70B)',
-        versions: [
-          {
-            name: 'On-Demand',
-            pricing: { inputPrice: 1.95, outputPrice: 2.56 }
-          }
-        ]
-      }
+      // {
+      //   id: 'llama-2-chat-13b',
+      //   name: 'Llama 2 Chat (13B)',
+      //   versions: [
+      //     {
+      //       name: 'On-Demand',
+      //       pricing: { inputPrice: 0.75, outputPrice: 1.00 }
+      //     }
+      //   ]
+      // },
+      // {
+      //   id: 'llama-2-chat-70b',
+      //   name: 'Llama 2 Chat (70B)',
+      //   versions: [
+      //     {
+      //       name: 'On-Demand',
+      //       pricing: { inputPrice: 1.95, outputPrice: 2.56 }
+      //     }
+      //   ]
+      // }
     ]
   },
   {
@@ -430,11 +430,11 @@ export const llmProviders: LLMProvider[] = [
       }
     ]
   },
-  {
-    id: 'aws',
-    name: 'AWS Bedrock',
-    type: 'llm',
-    pricingUrl: 'https://aws.amazon.com/bedrock/pricing/',
-    models: []
-  }
+  // {
+  //   id: 'aws',
+  //   name: 'AWS Bedrock',
+  //   type: 'llm',
+  //   pricingUrl: 'https://aws.amazon.com/bedrock/pricing/',
+  //   models: []
+  // }
 ];
