@@ -16,7 +16,7 @@ export function LLMCalculator() {
   const [calculationType, setCalculationType] = useState<'tokens' | 'words'>('tokens');
   const { addToCart } = useCart();
 
-  const WORDS_TO_TOKENS_RATIO = 1.25;
+  const WORDS_TO_TOKENS_RATIO = 1.4;
 
   const handleInputChange = (value: number, type: 'input' | 'output') => {
     const numValue = Math.max(0, value || 0);
@@ -100,7 +100,7 @@ export function LLMCalculator() {
           </div>
           {calculationType === 'words' && (
             <p className="text-sm text-gray-500 dark:text-gray-400 bg-blue-50 dark:bg-blue-900/20 p-2 rounded-lg">
-              1 word ≈ 1.25 tokens (Approximate conversion)
+              1 word ≈ 1.4 tokens (Approximate conversion)
             </p>
           )}
         </div>
