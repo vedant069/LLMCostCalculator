@@ -7,7 +7,8 @@ import {
   ChevronRight,
   Moon,
   Sun,
-  Database
+  Database,
+  ShoppingCart,
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -36,6 +37,11 @@ export function Sidebar({ activeItem, onItemClick, isCollapsed, setIsCollapsed }
       id: 'object-storage',
       name: 'Object Storage',
       icon: Database,
+    },
+    {
+      id: 'checkout',
+      name: 'Checkout',
+      icon: ShoppingCart,
     }
   ];
 

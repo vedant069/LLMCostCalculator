@@ -4,6 +4,7 @@ import { Calculator } from './components/Calculator';
 import { LLMCalculator } from './components/LLMCalculator';
 import { ObjectCalculator } from './components/ObjectCalculator';
 import { Cart } from './components/Cart';
+import { Checkout } from './components/Checkout';
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
 
@@ -28,6 +29,11 @@ function App() {
           title: 'Object Storage Pricing',
           description: 'Calculate and compare pricing across different object storage providers'
         };
+      case 'checkout':
+        return {
+          title: 'Checkout',
+          description: 'Review your cart and proceed to payment'
+        };
       case 'text-to-speech':
         return {
           title: 'Text to Speech Pricing',
@@ -48,6 +54,28 @@ function App() {
           title: 'AI Services Pricing',
           description: 'Calculate and compare pricing across different AI service providers'
         };
+    }
+  };
+
+  const renderContent = () => {
+    switch (activeItem) {
+      case 'speech-to-text':
+        return <Calculator />;
+      case 'llms':
+        return <LLMCalculator />;
+      case 'object-storage':
+        return <ObjectCalculator />;
+      case 'checkout':
+        return <Checkout />;
+      default:
+        return (
+          <div className="text-center py-12">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Coming Soon</h3>
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+              This calculator is currently under development.
+            </p>
+          </div>
+        );
     }
   };
 
@@ -72,28 +100,17 @@ function App() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                <div className="lg:col-span-3">
-                  {activeItem === 'speech-to-text' ? (
-                    <Calculator />
-                  ) : activeItem === 'llms' ? (
-                    <LLMCalculator />
-                  ) : activeItem === 'object-storage' ? (
-                    <ObjectCalculator />
-                  ) : (
-                    <div className="text-center py-12">
-                      <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Coming Soon</h3>
-                      <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                        This calculator is currently under development.
-                      </p>
+              <div className={`grid grid-cols-1 ${activeItem === 'checkout' ? '' : 'lg:grid-cols-4'} gap-8`}>
+                <div className={activeItem === 'checkout' ? 'col-span-1' : 'lg:col-span-3'}>
+                  {renderContent()}
+                </div>
+                {activeItem !== 'checkout' && (
+                  <div className="lg:col-span-1">
+                    <div className="sticky top-8">
+                      <Cart />
                     </div>
-                  )}
-                </div>
-                <div className="lg:col-span-1">
-                  <div className="sticky top-8">
-                    <Cart />
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </main>
