@@ -9,6 +9,7 @@ import {
   Sun,
   Database,
   ShoppingCart,
+  ClipboardList,
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -37,6 +38,11 @@ export function Sidebar({ activeItem, onItemClick, isCollapsed, setIsCollapsed }
       id: 'object-storage',
       name: 'Object Storage',
       icon: Database,
+    },
+    {
+      id: 'assessment',
+      name: 'Assessment',
+      icon: ClipboardList,
     },
     {
       id: 'summary',

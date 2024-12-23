@@ -3,6 +3,7 @@ import { Sidebar } from './components/Sidebar';
 import { Calculator } from './components/Calculator';
 import { LLMCalculator } from './components/LLMCalculator';
 import { ObjectCalculator } from './components/ObjectCalculator';
+import { AssessmentCalculator } from './components/AssessmentCalculator';
 import { Cart } from './components/Cart';
 import { Summary } from './components/Summary';
 import { CartProvider } from './context/CartContext';
@@ -28,6 +29,11 @@ function App() {
         return {
           title: 'Object Storage Pricing',
           description: 'Calculate and compare pricing across different object storage providers'
+        };
+      case 'assessment':
+        return {
+          title: 'Assessment Calculator',
+          description: 'Calculate costs for assessments with fixed parameters'
         };
       case 'summary':
         return {
@@ -56,6 +62,8 @@ function App() {
         return <LLMCalculator />;
       case 'object-storage':
         return <ObjectCalculator />;
+      case 'assessment':
+        return <AssessmentCalculator />;
       case 'summary':
         return <Summary />;
       default:
