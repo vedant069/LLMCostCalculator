@@ -46,10 +46,10 @@ export const objectStorageProviders: ObjectStorageProvider[] = [
     id: 'google-cloud-storage',
     name: 'Google Cloud Storage',
     storageTiers: [
-      { name: 'Standard', storagePrice: 0.026 },
-      { name: 'Nearline', storagePrice: 0.01 },
-      { name: 'Coldline', storagePrice: 0.007 },
-      { name: 'Archive', storagePrice: 0.004 }
+      { name: 'Standard', storagePrice: 0.020 },
+      { name: 'Nearline', storagePrice: 0.010 },
+      { name: 'Coldline', storagePrice: 0.004 },
+      { name: 'Archive', storagePrice: 0.0012 }
     ],
     transferTiers: [
       { price: 0.12 }
@@ -59,9 +59,11 @@ export const objectStorageProviders: ObjectStorageProvider[] = [
     id: 'azure-blob',
     name: 'Azure Blob Storage',
     storageTiers: [
+      { name: 'Premium', storagePrice: 0.15 },
       { name: 'Hot', storagePrice: 0.018 },
       { name: 'Cool', storagePrice: 0.01 },
-      { name: 'Archive', storagePrice: 0.00099 }
+      { name: 'Cold', storagePrice: 0.0036 },
+      { name: 'Archive', storagePrice: 0.002 }
     ],
     transferTiers: [
       { price: 0.087 }

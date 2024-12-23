@@ -18,7 +18,16 @@ export interface SpeechToTextCartItem {
   cost: number;
 }
 
-export type CartItem = LLMCartItem | SpeechToTextCartItem;
+export interface ObjectStorageCartItem {
+  type: 'object-storage';
+  provider: string;
+  storageTier: string;
+  storageAmount: number;
+  transferAmount: number;
+  cost: number;
+}
+
+export type CartItem = LLMCartItem | SpeechToTextCartItem | ObjectStorageCartItem;
 
 interface CartContextType {
   items: CartItem[];

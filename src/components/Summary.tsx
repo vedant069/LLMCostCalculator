@@ -143,6 +143,55 @@ export function Summary() {
           </button>
         </div>
       );
+    } else if (item.type === 'object-storage') {
+      const pricingUrl = getPricingUrl(item.provider, 'object-storage');
+      return (
+        <div key={index} className="flex items-center justify-between p-5 bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="text-xs font-medium bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-100 px-2.5 py-1 rounded-md">
+                Object Storage
+              </span>
+              <div className="flex items-center gap-1.5">
+                {pricingUrl ? (
+                  <a
+                    href={pricingUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center gap-1.5 transition-colors"
+                  >
+                    {item.provider}
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                ) : (
+                  <span className="font-medium">{item.provider}</span>
+                )}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Storage Tier: <span className="font-medium">{item.storageTier}</span>
+              </p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Storage: <span className="font-medium">{item.storageAmount.toLocaleString()} GB</span>
+              </p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Transfer: <span className="font-medium">{item.transferAmount.toLocaleString()} GB</span>
+              </p>
+              <p className="text-sm font-medium text-yellow-600 dark:text-yellow-400">
+                Monthly Cost: ${item.cost.toFixed(2)}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => removeFromCart(index)}
+            className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors duration-200"
+            aria-label="Remove item"
+          >
+            <X className="w-4 h-4 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400" />
+          </button>
+        </div>
+      );
     }
   };
 
@@ -183,7 +232,7 @@ export function Summary() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                   <h3 className="font-medium mb-2">LLM Usage</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -200,9 +249,9 @@ export function Summary() {
                   </p>
                 </div>
                 <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                  <h3 className="font-medium mb-2">Storage Usage</h3>
+                  <h3 className="font-medium mb-2">Object Storage Usage</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Storage: {costs.metrics.storageGB.toFixed(3)} GB<br />
+                    Storage: {costs.metrics.storageGB.toLocaleString()} GB<br />
                     Cost: ${costs.storageCost.toFixed(4)}
                   </p>
                 </div>

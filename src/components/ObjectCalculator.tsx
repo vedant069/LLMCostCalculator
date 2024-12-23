@@ -17,13 +17,15 @@ export function ObjectCalculator() {
   const [storageAmount, setStorageAmount] = useState<number>(1);
   const [transferAmount, setTransferAmount] = useState<number>(1);
   const [selectedTier, setSelectedTier] = useState<string>('Standard');
+  const [storageCost, setStorageCost] = useState<number>(0);
+  const [transferCost, setTransferCost] = useState<number>(0);
   const [totalCost, setTotalCost] = useState<number>(0);
   const [showPricing, setShowPricing] = useState(false);
   const { addToCart } = useCart();
 
   const calculateCost = () => {
     const provider = objectStorageProviders.find(p => p.id === selectedProvider);
-    if (!provider) return 0;
+    if (!provider) return { total: 0, storage: 0, transfer: 0 };
 
     // Find the applicable storage tier based on name and storage amount
     const storageTier = provider.storageTiers.find(tier => 
@@ -41,12 +43,14 @@ export function ObjectCalculator() {
     const transferTier = provider.transferTiers[0];
     const transferCost = transferAmount * transferTier.price;
 
-    return storageCost + transferCost;
+    return { total: storageCost + transferCost, storage: storageCost, transfer: transferCost };
   };
 
   useEffect(() => {
-    const cost = calculateCost();
-    setTotalCost(cost);
+    const costs = calculateCost();
+    setStorageCost(costs.storage);
+    setTransferCost(costs.transfer);
+    setTotalCost(costs.total);
   }, [selectedProvider, storageAmount, transferAmount, selectedTier]);
 
   const currentProvider = objectStorageProviders.find(p => p.id === selectedProvider);
@@ -183,9 +187,15 @@ export function ObjectCalculator() {
           />
         </div>
 
-        <div className="pt-4">
+        <div className="pt-4 space-y-2">
+          <div className="text-md">
+            Storage Cost: ${storageCost.toFixed(2)}/month
+          </div>
+          <div className="text-md">
+            Transfer Cost: ${transferCost.toFixed(2)}/month
+          </div>
           <div className="text-lg font-semibold">
-            Estimated Monthly Cost: ${totalCost.toFixed(2)}
+            Total Estimated Cost: ${totalCost.toFixed(2)}/month
           </div>
         </div>
 
