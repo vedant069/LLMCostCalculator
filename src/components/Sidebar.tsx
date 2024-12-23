@@ -44,11 +44,11 @@ export function Sidebar({ activeItem, onItemClick, isCollapsed, setIsCollapsed }
       name: 'Assessment',
       icon: ClipboardList,
     },
-    {
-      id: 'summary',
-      name: 'Summary',
-      icon: ShoppingCart,
-    }
+    // {
+    //   id: 'summary',
+    //   name: 'Summary',
+    //   icon: ShoppingCart,
+    // }
   ];
 
   return (

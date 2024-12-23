@@ -1,16 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { objectStorageProviders } from '../data/object-provider';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
+import { Database, HardDrive, ChevronDown, ChevronUp, ShoppingCart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { ChevronDown, ChevronUp } from 'lucide-react';
 
 export function ObjectCalculator() {
   const [selectedProvider, setSelectedProvider] = useState(objectStorageProviders[0].id);
@@ -22,6 +13,7 @@ export function ObjectCalculator() {
   const [totalCost, setTotalCost] = useState<number>(0);
   const [showPricing, setShowPricing] = useState(false);
   const { addToCart } = useCart();
+
 
   const calculateCost = () => {
     const provider = objectStorageProviders.find(p => p.id === selectedProvider);
@@ -127,95 +119,134 @@ export function ObjectCalculator() {
   };
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle>Object Storage Calculator</CardTitle>
-        <CardDescription>
-          Calculate costs for different object storage providers
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <Label>Provider</Label>
-          <select
-            value={selectedProvider}
-            onChange={(e) => setSelectedProvider(e.target.value)}
-            className="w-full p-2 border rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+    <div className="space-y-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1.5">
+              Provider
+            </label>
+            <div className="relative">
+              <Database className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" />
+              <select
+                value={selectedProvider}
+                onChange={(e) => setSelectedProvider(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 text-sm bg-white dark:bg-gray-700 dark:text-gray-200"
+              >
+                {objectStorageProviders.map((provider) => (
+                  <option key={provider.id} value={provider.id}>
+                    {provider.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {currentProvider && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1.5">
+                Storage Tier
+              </label>
+              <select
+                value={selectedTier}
+                onChange={(e) => setSelectedTier(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 text-sm bg-white dark:bg-gray-700 dark:text-gray-200"
+              >
+                {currentProvider.storageTiers.map((tier) => (
+                  <option key={tier.name} value={tier.name}>
+                    {tier.name} (${tier.storagePrice.toFixed(3)}/GB per month)
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1.5">
+              Storage Amount (GB)
+            </label>
+            <div className="relative">
+              <HardDrive className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" />
+              <input
+                type="number"
+                min="0"
+                value={storageAmount}
+                onChange={(e) => setStorageAmount(Number(e.target.value))}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 text-sm bg-white dark:bg-gray-700 dark:text-gray-200"
+                placeholder="Enter storage amount..."
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1.5">
+              Data Transfer Amount (GB)
+            </label>
+            <div className="relative">
+              <HardDrive className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" />
+              <input
+                type="number"
+                min="0"
+                value={transferAmount}
+                onChange={(e) => setTransferAmount(Number(e.target.value))}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 text-sm bg-white dark:bg-gray-700 dark:text-gray-200"
+                placeholder="Enter transfer amount..."
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="text-sm">
+              <span className="text-gray-600 dark:text-gray-400">Storage Cost:</span>
+              <span className="ml-2 font-medium text-gray-900 dark:text-gray-100">
+                ${storageCost.toFixed(2)}/month
+              </span>
+            </div>
+            <div className="text-sm">
+              <span className="text-gray-600 dark:text-gray-400">Transfer Cost:</span>
+              <span className="ml-2 font-medium text-gray-900 dark:text-gray-100">
+                ${transferCost.toFixed(2)}/month
+              </span>
+            </div>
+            <div className="text-sm md:text-right">
+              <span className="text-gray-600 dark:text-gray-400">Total Cost:</span>
+              <span className="ml-2 font-semibold text-yellow-600 dark:text-yellow-400">
+                ${totalCost.toFixed(2)}/month
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 flex gap-4">
+          <button
+            onClick={handleAddToCart}
+            className="flex-1 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-colors flex items-center justify-center gap-2"
           >
-            {objectStorageProviders.map((provider) => (
-              <option key={provider.id} value={provider.id}>
-                {provider.name}
-              </option>
-            ))}
-          </select>
+            <ShoppingCart className="w-4 h-4" />
+            Add to Cart
+          </button>
         </div>
+      </div>
 
-        {currentProvider && (
-          <div className="space-y-2">
-            <Label>Storage Tier</Label>
-            <select
-              value={selectedTier}
-              onChange={(e) => setSelectedTier(e.target.value)}
-              className="w-full p-2 border rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-            >
-              {currentProvider.storageTiers.map((tier) => (
-                <option key={tier.name} value={tier.name}>
-                  {tier.name} (${tier.storagePrice.toFixed(3)}/GB per month)
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
+      <button
+        onClick={() => setShowPricing(!showPricing)}
+        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 
+                  bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
+                  hover:bg-gray-50 dark:hover:bg-gray-700 
+                  rounded-lg transition-colors duration-200
+                  text-sm font-medium text-gray-700 dark:text-gray-300"
+      >
+        {showPricing ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+        {showPricing ? 'Hide' : 'Show'} Pricing Details
+      </button>
 
-        <div className="space-y-2">
-          <Label>Storage Amount (GB)</Label>
-          <Input
-            type="number"
-            min="0"
-            value={storageAmount}
-            onChange={(e) => setStorageAmount(Number(e.target.value))}
-          />
+      {showPricing && (
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+          {renderPricingDetails()}
         </div>
-
-        <div className="space-y-2">
-          <Label>Data Transfer Amount (GB)</Label>
-          <Input
-            type="number"
-            min="0"
-            value={transferAmount}
-            onChange={(e) => setTransferAmount(Number(e.target.value))}
-          />
-        </div>
-
-        <div className="pt-4 space-y-2">
-          <div className="text-md">
-            Storage Cost: ${storageCost.toFixed(2)}/month
-          </div>
-          <div className="text-md">
-            Transfer Cost: ${transferCost.toFixed(2)}/month
-          </div>
-          <div className="text-lg font-semibold">
-            Total Estimated Cost: ${totalCost.toFixed(2)}/month
-          </div>
-        </div>
-
-        <button
-          onClick={handleAddToCart}
-          className="w-full mt-4 px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors"
-        >
-          Add to Cart
-        </button>
-
-        <button
-          onClick={() => setShowPricing(!showPricing)}
-          className="w-full mt-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center justify-center gap-2"
-        >
-          {showPricing ? 'Hide' : 'Show'} Pricing Details
-          {showPricing ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-        </button>
-
-        {showPricing && renderPricingDetails()}
-      </CardContent>
-    </Card>
+      )}
+    </div>
   );
 }

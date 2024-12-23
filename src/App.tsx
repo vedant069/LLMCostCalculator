@@ -5,7 +5,7 @@ import { LLMCalculator } from './components/LLMCalculator';
 import { ObjectCalculator } from './components/ObjectCalculator';
 import { AssessmentCalculator } from './components/AssessmentCalculator';
 import { Cart } from './components/Cart';
-import { Summary } from './components/Summary';
+// import { Summary } from './components/Summary';
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
 
@@ -35,11 +35,11 @@ function App() {
           title: 'Assessment Calculator',
           description: 'Calculate costs for assessments with fixed parameters'
         };
-      case 'summary':
-        return {
-          title: 'Summary',
-          description: 'Review your cart and proceed to payment'
-        };
+      // case 'summary':
+      //   return {
+      //     title: 'Summary',
+      //     description: 'Review your cart and proceed to payment'
+      //   };
       case 'text-to-speech':
         return {
           title: 'Text to Speech Pricing',
@@ -64,8 +64,7 @@ function App() {
         return <ObjectCalculator />;
       case 'assessment':
         return <AssessmentCalculator />;
-      case 'summary':
-        return <Summary />;
+
       default:
         return (
           <div className="text-center py-12">
