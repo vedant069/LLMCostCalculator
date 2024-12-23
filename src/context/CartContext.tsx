@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-interface LLMCartItem {
+export interface LLMCartItem {
   type: 'llm';
   provider: string;
   model: string;
@@ -10,7 +10,7 @@ interface LLMCartItem {
   outputTokens: number;
 }
 
-interface SpeechToTextCartItem {
+export interface SpeechToTextCartItem {
   type: 'speech-to-text';
   provider: string;
   model: string;
@@ -18,16 +18,7 @@ interface SpeechToTextCartItem {
   cost: number;
 }
 
-interface ObjectStorageCartItem {
-  type: 'object-storage';
-  provider: string;
-  storageTier: string;
-  storageAmount: number;
-  transferAmount: number;
-  cost: number;
-}
-
-type CartItem = LLMCartItem | SpeechToTextCartItem | ObjectStorageCartItem;
+export type CartItem = LLMCartItem | SpeechToTextCartItem;
 
 interface CartContextType {
   items: CartItem[];
