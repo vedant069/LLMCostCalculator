@@ -39,8 +39,8 @@ export function Sidebar({ activeItem, onItemClick, isCollapsed, setIsCollapsed }
       icon: Database,
     },
     {
-      id: 'checkout',
-      name: 'Checkout',
+      id: 'summary',
+      name: 'Summary',
       icon: ShoppingCart,
     }
   ];

@@ -4,7 +4,7 @@ import { Calculator } from './components/Calculator';
 import { LLMCalculator } from './components/LLMCalculator';
 import { ObjectCalculator } from './components/ObjectCalculator';
 import { Cart } from './components/Cart';
-import { Checkout } from './components/Checkout';
+import { Summary } from './components/Summary';
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
 
@@ -29,9 +29,9 @@ function App() {
           title: 'Object Storage Pricing',
           description: 'Calculate and compare pricing across different object storage providers'
         };
-      case 'checkout':
+      case 'summary':
         return {
-          title: 'Checkout',
+          title: 'Summary',
           description: 'Review your cart and proceed to payment'
         };
       case 'text-to-speech':
@@ -39,16 +39,7 @@ function App() {
           title: 'Text to Speech Pricing',
           description: 'Calculate and compare pricing across different text-to-speech providers'
         };
-      case 'image':
-        return {
-          title: 'Image Generation Pricing',
-          description: 'Calculate and compare pricing across different image generation providers'
-        };
-      case 'video':
-        return {
-          title: 'Video Generation Pricing',
-          description: 'Calculate and compare pricing across different video generation providers'
-        };
+
       default:
         return {
           title: 'AI Services Pricing',
@@ -65,8 +56,8 @@ function App() {
         return <LLMCalculator />;
       case 'object-storage':
         return <ObjectCalculator />;
-      case 'checkout':
-        return <Checkout />;
+      case 'summary':
+        return <Summary />;
       default:
         return (
           <div className="text-center py-12">
@@ -100,11 +91,11 @@ function App() {
                 </p>
               </div>
 
-              <div className={`grid grid-cols-1 ${activeItem === 'checkout' ? '' : 'lg:grid-cols-4'} gap-8`}>
-                <div className={activeItem === 'checkout' ? 'col-span-1' : 'lg:col-span-3'}>
+              <div className={`grid grid-cols-1 ${activeItem === 'summary' ? '' : 'lg:grid-cols-4'} gap-8`}>
+                <div className={activeItem === 'summary' ? 'col-span-1' : 'lg:col-span-3'}>
                   {renderContent()}
                 </div>
-                {activeItem !== 'checkout' && (
+                {activeItem !== 'summary' && (
                   <div className="lg:col-span-1">
                     <div className="sticky top-8">
                       <Cart />
