@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Calculator } from './components/Calculator';
 import { LLMCalculator } from './components/LLMCalculator';
+import { ObjectCalculator } from './components/ObjectCalculator';
 import { Cart } from './components/Cart';
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -21,6 +22,11 @@ function App() {
         return {
           title: 'LLM Pricing',
           description: 'Calculate and compare pricing across different LLM providers'
+        };
+      case 'object-storage':
+        return {
+          title: 'Object Storage Pricing',
+          description: 'Calculate and compare pricing across different object storage providers'
         };
       case 'text-to-speech':
         return {
@@ -72,6 +78,8 @@ function App() {
                     <Calculator />
                   ) : activeItem === 'llms' ? (
                     <LLMCalculator />
+                  ) : activeItem === 'object-storage' ? (
+                    <ObjectCalculator />
                   ) : (
                     <div className="text-center py-12">
                       <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Coming Soon</h3>
