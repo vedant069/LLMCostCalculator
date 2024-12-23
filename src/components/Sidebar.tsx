@@ -6,7 +6,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Moon,
-  Sun
+  Sun,
+  Database
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -30,6 +31,11 @@ export function Sidebar({ activeItem, onItemClick, isCollapsed, setIsCollapsed }
       id: 'llms',
       name: 'LLMs',
       icon: MessageSquare,
+    },
+    {
+      id: 'object-storage',
+      name: 'Object Storage',
+      icon: Database,
     }
   ];
 
