@@ -6,7 +6,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Moon,
-  Sun
+  Sun,
+  ShoppingCart,
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -30,7 +31,12 @@ export function Sidebar({ activeItem, onItemClick, isCollapsed, setIsCollapsed }
       id: 'llms',
       name: 'LLMs',
       icon: MessageSquare,
-    }
+    },
+    {
+      id: 'checkout',
+      name: 'Checkout',
+      icon: ShoppingCart,
+    },
   ];
 
   return (
