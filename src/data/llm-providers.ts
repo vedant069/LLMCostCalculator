@@ -430,6 +430,54 @@ export const llmProviders: LLMProvider[] = [
       }
     ]
   },
+  {
+    id: 'google',
+    name: 'Google',
+    type: 'llm',
+    pricingUrl: 'https://ai.google.dev/pricing#1_5flash',
+    models: [
+      {
+        id: 'gemini-1.5-flash',
+        name: 'Gemini 1.5 Flash',
+        versions: [
+          {
+            name: 'Default',
+            pricing: { inputPrice: 0.075, outputPrice: 0.30 }
+          }
+        ]
+      },
+      {
+        id: 'gemini-1.5-flash-8b',
+        name: 'Gemini 1.5 Flash 8B',
+        versions: [
+          {
+            name: 'Default',
+            pricing: { inputPrice: 0.0375, outputPrice: 0.15 }
+          }
+        ]
+      },
+      {
+        id: 'gemini-1.5-pro',
+        name: 'Gemini 1.5 Pro',
+        versions: [
+          {
+            name: 'Default',
+            pricing: { inputPrice: 1.25, outputPrice: 5.00 }
+          }
+        ]
+      },
+      {
+        id: 'gemini-1.0-pro',
+        name: 'Gemini 1.0 Pro',
+        versions: [
+          {
+            name: 'Default',
+            pricing: { inputPrice: 0.50, outputPrice: 1.50 }
+          }
+        ]
+      }
+    ]
+  },
   // {
   //   id: 'aws',
   //   name: 'AWS Bedrock',
