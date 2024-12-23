@@ -3,18 +3,23 @@ import { ShoppingCart, ExternalLink, CreditCard, X } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { llmProviders, LLMProvider } from '../data/llm-providers';
 import { speechProviders } from '../data/providers';
+import { objectStorageProviders } from '../data/object-provider';
 import { CartItem, LLMCartItem, SpeechToTextCartItem } from '../context/CartContext';
 
 export function Checkout() {
   const { items, total, removeFromCart } = useCart();
 
-  const getPricingUrl = (provider: string, type: 'llm' | 'speech-to-text'): string | undefined => {
+  const getPricingUrl = (provider: string, type: 'llm' | 'speech-to-text' | 'object-storage'): string | undefined => {
     if (type === 'llm') {
       const llmProvider = llmProviders.find(p => p.name === provider) as LLMProvider;
       return llmProvider?.pricingUrl;
-    } else {
+    } else if (type === 'speech-to-text') {
       const speechProvider = speechProviders.find(p => p.name === provider);
       return speechProvider?.pricingUrl;
+    } else if (type === 'object-storage') {
+      const storageProvider = objectStorageProviders.find(p => p.name === provider);
+      // Add pricing URLs to object-provider.ts if needed
+      return undefined;
     }
   };
 
@@ -53,6 +58,7 @@ export function Checkout() {
               </p>
             </div>
           </div>
+
           <div className="flex items-center gap-4">
             <p className="text-lg font-semibold text-yellow-600 dark:text-yellow-400">
               ${item.cost.toFixed(4)}
@@ -64,6 +70,7 @@ export function Checkout() {
             >
               <X className="w-4 h-4 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400" />
             </button>
+
           </div>
         </div>
       );
@@ -75,6 +82,7 @@ export function Checkout() {
             <div className="flex items-center gap-3 mb-3">
               <span className="text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 px-2.5 py-1 rounded-md">
                 Speech-to-Text
+
               </span>
               <div className="flex items-center gap-1.5">
                 {pricingUrl ? (
@@ -112,6 +120,7 @@ export function Checkout() {
             >
               <X className="w-4 h-4 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400" />
             </button>
+
           </div>
         </div>
       );
@@ -119,6 +128,7 @@ export function Checkout() {
   };
 
   return (
+
     <div className="max-w-4xl mx-auto p-6 space-y-8">
       <div className="flex items-center gap-3 mb-8">
         <ShoppingCart className="w-7 h-7" />
@@ -159,11 +169,13 @@ export function Checkout() {
 
             {/* <button 
               className="w-full mt-6 px-6 py-4 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-bold text-lg flex items-center justify-center gap-3 transition-all duration-200 shadow-md hover:shadow-lg"
+
             >
               <CreditCard className="w-6 h-6" />
               Proceed to Payment
             </button> */}
           </div>
+
         </div>
       </>
     )}

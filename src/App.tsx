@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Calculator } from './components/Calculator';
 import { LLMCalculator } from './components/LLMCalculator';
+import { ObjectCalculator } from './components/ObjectCalculator';
 import { Cart } from './components/Cart';
 import { Checkout } from './components/Checkout';
 import { CartProvider } from './context/CartContext';
@@ -22,6 +23,11 @@ function App() {
         return {
           title: 'LLM Pricing',
           description: 'Calculate and compare pricing across different LLM providers'
+        };
+      case 'object-storage':
+        return {
+          title: 'Object Storage Pricing',
+          description: 'Calculate and compare pricing across different object storage providers'
         };
       case 'checkout':
         return {
@@ -57,6 +63,8 @@ function App() {
         return <Calculator />;
       case 'llms':
         return <LLMCalculator />;
+      case 'object-storage':
+        return <ObjectCalculator />;
       case 'checkout':
         return <Checkout />;
       default:

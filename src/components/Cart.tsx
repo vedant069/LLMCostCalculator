@@ -3,6 +3,7 @@ import { ShoppingCart, X, ExternalLink } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { llmProviders } from '../data/llm-providers';
 import { speechProviders } from '../data/providers';
+import { objectStorageProviders } from '../data/object-provider';
 
 export function Cart() {
   const { items, removeFromCart, total } = useCart();
@@ -11,9 +12,13 @@ export function Cart() {
     if (type === 'llm') {
       const llmProvider = llmProviders.find(p => p.name === provider);
       return llmProvider?.pricingUrl;
-    } else {
+    } else if (type === 'speech-to-text') {
       const speechProvider = speechProviders.find(p => p.name === provider);
       return speechProvider?.pricingUrl;
+    } else if (type === 'object-storage') {
+      const storageProvider = objectStorageProviders.find(p => p.name === provider);
+      // Add pricing URLs to object-provider.ts if needed
+      return undefined;
     }
   };
 
@@ -101,6 +106,77 @@ export function Cart() {
           >
             <X className="w-4 h-4" />
           </button>
+        </div>
+      );
+    } else if (item.type === 'object-storage') {
+      const pricingUrl = getPricingUrl(item.provider, 'object-storage');
+      return (
+        <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-xs font-medium bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-100 px-2 py-0.5 rounded">
+                Object Storage
+              </span>
+              <div className="flex items-center gap-1">
+                {pricingUrl ? (
+                  <a
+                    href={pricingUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center gap-1"
+                  >
+                    {item.provider}
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                ) : (
+                  <span className="font-medium">{item.provider}</span>
+                )}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1 mt-2">
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                  Storage Tier
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {item.storageTier}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                  Storage Amount
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {item.storageAmount.toLocaleString()} GB
+                </p>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                  Transfer Amount
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {item.transferAmount.toLocaleString()} GB
+                </p>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                  Monthly Cost
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  ${item.cost.toFixed(2)}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-start ml-4">
+            <button
+              onClick={() => removeFromCart(index)}
+              className="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400"
+              aria-label="Remove from cart"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       );
     }
