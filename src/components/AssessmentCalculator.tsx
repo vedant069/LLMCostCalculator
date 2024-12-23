@@ -10,8 +10,9 @@ import {
   CardTitle,
 } from "./ui/card";
 import { Label } from "./ui/label";
-import { ChevronDown, ChevronUp, Edit2 } from 'lucide-react';
 import { Input } from './ui/input';
+import { Brain, Mic, HardDrive, ChevronDown, ChevronUp, Edit2, ShoppingCart, Settings2 } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 
 interface CalculatorState {
   llmModel: string;
@@ -54,6 +55,7 @@ export function AssessmentCalculator() {
   const [showPricing, setShowPricing] = useState(false);
   const [editingParams, setEditingParams] = useState(false);
 
+
   // Calculate tokens from words
   const INPUT_TOKENS = fixedParams.inputWords * 1.4;
   const OUTPUT_TOKENS = fixedParams.outputWords * 1.4;
@@ -91,7 +93,6 @@ export function AssessmentCalculator() {
     const speechPricing = selectedSpeechProvider?.tiers[0].pricePerMinute || 0;
 
     // Calculate individual costs
-    // LLM cost calculation (per million tokens)
     const inputCost = (INPUT_TOKENS / 1_000_000) * (llmPricing?.inputPrice || 0);
     const outputCost = (OUTPUT_TOKENS / 1_000_000) * (llmPricing?.outputPrice || 0);
     const llmCostPerAssessment = inputCost + outputCost;
@@ -101,7 +102,6 @@ export function AssessmentCalculator() {
     // Total cost for all assessments
     const total = (llmCostPerAssessment + storageCostPerAssessment + speechCostPerAssessment) * state.numberOfAssessments;
     
-    // Update state with all costs for display
     setTotalCost(total);
     setCosts({
       llmCost: llmCostPerAssessment,
@@ -122,6 +122,7 @@ export function AssessmentCalculator() {
     }));
   };
 
+
   const renderPricingDetails = () => {
     const selectedStorageProvider = objectStorageProviders.find(
       provider => provider.id === state.storageProvider
@@ -130,172 +131,232 @@ export function AssessmentCalculator() {
     const transferTier = selectedStorageProvider?.transferTiers[0];
 
     return (
-      <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-        <div className="flex justify-between items-center mb-2">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Fixed Parameters</h3>
-          <button
-            onClick={() => setEditingParams(!editingParams)}
-            className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full"
-          >
-            <Edit2 className="h-4 w-4" />
-          </button>
-        </div>
-        
-        {editingParams ? (
-          <div className="space-y-4 mb-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Input Words</Label>
-                <Input
-                  type="number"
-                  value={fixedParams.inputWords}
-                  onChange={(e) => handleParamChange('inputWords', e.target.value)}
-                  className="mt-1"
-                />
-              </div>
-              <div>
-                <Label>Output Words</Label>
-                <Input
-                  type="number"
-                  value={fixedParams.outputWords}
-                  onChange={(e) => handleParamChange('outputWords', e.target.value)}
-                  className="mt-1"
-                />
-              </div>
-              <div>
-                <Label>Storage (GB)</Label>
-                <Input
-                  type="number"
-                  value={fixedParams.storageGB}
-                  onChange={(e) => handleParamChange('storageGB', e.target.value)}
-                  className="mt-1"
-                  step="0.01"
-                />
-              </div>
-              <div>
-                <Label>Data Transfer (GB)</Label>
-                <Input
-                  type="number"
-                  value={fixedParams.transferGB}
-                  onChange={(e) => handleParamChange('transferGB', e.target.value)}
-                  className="mt-1"
-                  step="0.01"
-                />
-              </div>
-              <div>
-                <Label>Minutes</Label>
-                <Input
-                  type="number"
-                  value={fixedParams.minutes}
-                  onChange={(e) => handleParamChange('minutes', e.target.value)}
-                  className="mt-1"
-                />
+      <div className="mt-4 space-y-6">
+        <div className="bg-white-50/50 dark:bg-white-800/50 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
+              <Settings2 className="w-5 h-5 text-yellow-500" />
+              Fixed Parameters
+            </h3>
+            <button
+              onClick={() => setEditingParams(!editingParams)}
+              className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full transition-colors"
+            >
+              <Edit2 className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+            </button>
+          </div>
+          
+          {editingParams ? (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-sm text-gray-600 dark:text-gray-400">Input Words</Label>
+                  <Input
+                    type="number"
+                    value={fixedParams.inputWords}
+                    onChange={(e) => handleParamChange('inputWords', e.target.value)}
+                    className="border-gray-200 dark:border-gray-700 focus:ring-yellow-500 focus:border-yellow-500"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm text-gray-600 dark:text-gray-400">Output Words</Label>
+                  <Input
+                    type="number"
+                    value={fixedParams.outputWords}
+                    onChange={(e) => handleParamChange('outputWords', e.target.value)}
+                    className="border-gray-200 dark:border-gray-700 focus:ring-yellow-500 focus:border-yellow-500"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm text-gray-600 dark:text-gray-400">Storage (GB)</Label>
+                  <Input
+                    type="number"
+                    value={fixedParams.storageGB}
+                    onChange={(e) => handleParamChange('storageGB', e.target.value)}
+                    step="0.01"
+                    className="border-gray-200 dark:border-gray-700 focus:ring-yellow-500 focus:border-yellow-500"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm text-gray-600 dark:text-gray-400">Data Transfer (GB)</Label>
+                  <Input
+                    type="number"
+                    value={fixedParams.transferGB}
+                    onChange={(e) => handleParamChange('transferGB', e.target.value)}
+                    step="0.01"
+                    className="border-gray-200 dark:border-gray-700 focus:ring-yellow-500 focus:border-yellow-500"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm text-gray-600 dark:text-gray-400">Minutes</Label>
+                  <Input
+                    type="number"
+                    value={fixedParams.minutes}
+                    onChange={(e) => handleParamChange('minutes', e.target.value)}
+                    className="border-gray-200 dark:border-gray-700 focus:ring-yellow-500 focus:border-yellow-500"
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        ) : (
-          <ul className="list-disc list-inside mb-4 text-sm text-gray-600 dark:text-gray-300">
-            <li>Input Words per Assessment: {fixedParams.inputWords}</li>
-            <li>Output Words per Assessment: {fixedParams.outputWords}</li>
-            <li>Minutes per Assessment: {fixedParams.minutes}</li>
-            <li>Storage per Assessment: {fixedParams.storageGB} GB (${storageTier?.storagePrice.toFixed(4)}/GB)</li>
-            <li>Data Transfer per Assessment: {fixedParams.transferGB} GB (${transferTier?.price.toFixed(4)}/GB)</li>
-          </ul>
-        )}
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+              <div className="space-y-1">
+                <span className="text-gray-500 dark:text-gray-400">Input Words:</span>
+                <p className="font-medium text-gray-900 dark:text-gray-100">{fixedParams.inputWords}</p>
+              </div>
+              <div className="space-y-1">
+                <span className="text-gray-500 dark:text-gray-400">Output Words:</span>
+                <p className="font-medium text-gray-900 dark:text-gray-100">{fixedParams.outputWords}</p>
+              </div>
+              <div className="space-y-1">
+                <span className="text-gray-500 dark:text-gray-400">Storage:</span>
+                <p className="font-medium text-gray-900 dark:text-gray-100">{fixedParams.storageGB} GB</p>
+              </div>
+              <div className="space-y-1">
+                <span className="text-gray-500 dark:text-gray-400">Data Transfer:</span>
+                <p className="font-medium text-gray-900 dark:text-gray-100">{fixedParams.transferGB} GB</p>
+              </div>
+              <div className="space-y-1">
+                <span className="text-gray-500 dark:text-gray-400">Minutes:</span>
+                <p className="font-medium text-gray-900 dark:text-gray-100">{fixedParams.minutes}</p>
+              </div>
+            </div>
+          )}
+        </div>
 
-        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">Cost Breakdown (per assessment)</h3>
-        <ul className="list-disc list-inside text-sm text-gray-600 dark:text-gray-300">
-          <li>LLM Processing: ${costs.llmCost.toFixed(4)}</li>
-          <li>Speech-to-Text ({fixedParams.minutes} minutes): ${costs.speechCost.toFixed(4)}</li>
-          <li>Storage + Transfer: ${costs.storageCost.toFixed(4)}</li>
-        </ul>
+        <div className="bg-gray-50/50 dark:bg-gray-800/50 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Cost Breakdown (per assessment)</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <Brain className="w-4 h-4" />
+                LLM Processing
+              </div>
+              <p className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                ${costs.llmCost.toFixed(4)}
+              </p>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <Mic className="w-4 h-4" />
+                Speech-to-Text
+              </div>
+              <p className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                ${costs.speechCost.toFixed(4)}
+              </p>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <HardDrive className="w-4 h-4" />
+                Storage + Transfer
+              </div>
+              <p className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                ${costs.storageCost.toFixed(4)}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     );
   };
 
   return (
-    <Card className="w-full">
+    <Card className="w-full border-0 shadow-none bg-transparent">
       <CardHeader>
-        <CardTitle>Assessment Calculator</CardTitle>
-        <CardDescription>
-          Calculate costs for assessments with fixed parameters
+        <CardTitle className="text-2xl font-bold text-gray-500 dark:text-gray-100">Assessment Calculator</CardTitle>
+        <CardDescription className="text-gray-600 dark:text-gray-400">
+          Calculate costs for assessments with customizable parameters
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <Label>LLM Model</Label>
-          <select
-            className="w-full p-2 border rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-            value={state.llmModel}
-            onChange={(e) => setState({ ...state, llmModel: e.target.value })}
-          >
-            {llmProviders.map(provider =>
-              provider.models.map(model => (
-                <option key={model.id} value={model.id}>
-                  {provider.name} - {model.name}
-                </option>
-              ))
-            )}
-          </select>
-        </div>
-
-        <div className="space-y-2">
-          <Label>Speech-to-Text Provider</Label>
-          <select
-            className="w-full p-2 border rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-            value={state.speechProvider}
-            onChange={(e) => setState({ ...state, speechProvider: e.target.value })}
-          >
-            {speechProviders.map(provider => (
-              <option key={provider.id} value={provider.id}>
-                {provider.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="space-y-2">
-          <Label>Storage Provider</Label>
-          <select
-            className="w-full p-2 border rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-            value={state.storageProvider}
-            onChange={(e) => setState({ ...state, storageProvider: e.target.value })}
-          >
-            {objectStorageProviders.map(provider => (
-              <option key={provider.id} value={provider.id}>
-                {provider.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="space-y-2">
-          <Label>Number of Questions</Label>
-          <input
-            type="number"
-            min="1"
-            className="w-full p-2 border rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-            value={state.numberOfAssessments}
-            onChange={(e) => setState({ ...state, numberOfAssessments: parseInt(e.target.value) || 1 })}
-          />
-        </div>
-
-        <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-          <div className="flex justify-between items-center mb-4">
-            <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              Total Estimated Cost: ${totalCost.toFixed(4)}
-            </span>
-            <button
-              onClick={() => setShowPricing(!showPricing)}
-              className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
-            >
-              {showPricing ? 'Hide Details' : 'Show Details'}
-              {showPricing ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-            </button>
+      <CardContent className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <Label className="text-sm text-gray-600 dark:text-gray-400">LLM Model</Label>
+            <div className="relative">
+              <Brain className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-200 w-4 h-4" />
+              <select
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                value={state.llmModel}
+                onChange={(e) => setState({ ...state, llmModel: e.target.value })}
+              >
+                {llmProviders.map(provider =>
+                  provider.models.map(model => (
+                    <option key={model.id} value={model.id}>
+                      {provider.name} - {model.name}
+                    </option>
+                  ))
+                )}
+              </select>
+            </div>
           </div>
-          {showPricing && renderPricingDetails()}
+
+          <div className="space-y-2">
+            <Label className="text-sm text-gray-600 dark:text-gray-400">Speech-to-Text Provider</Label>
+            <div className="relative">
+              <Mic className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-200 w-4 h-4" />
+              <select
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                value={state.speechProvider}
+                onChange={(e) => setState({ ...state, speechProvider: e.target.value })}
+              >
+                {speechProviders.map(provider => (
+                  <option key={provider.id} value={provider.id}>
+                    {provider.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-sm text-gray-600 dark:text-gray-400">Storage Provider</Label>
+            <div className="relative">
+              <HardDrive className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-200 w-4 h-4" />
+              <select
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                value={state.storageProvider}
+                onChange={(e) => setState({ ...state, storageProvider: e.target.value })}
+              >
+                {objectStorageProviders.map(provider => (
+                  <option key={provider.id} value={provider.id}>
+                    {provider.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-sm text-gray-600 dark:text-gray-400">Number of Questions</Label>
+            <Input
+              type="number"
+              min="1"
+              className="border-gray-200 dark:border-gray-700  focus:ring-yellow-500 focus:border-yellow-500"
+              value={state.numberOfAssessments}
+              onChange={(e) => setState({ ...state, numberOfAssessments: parseInt(e.target.value) || 1 })}
+            />
+          </div>
         </div>
+
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-center md:text-left">
+              <p className="text-sm text-gray-600 dark:text-gray-400">Total Estimated Cost</p>
+              <p className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">
+                ${totalCost.toFixed(4)}
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-500">
+                For {state.numberOfAssessments} assessment{state.numberOfAssessments > 1 ? 's' : ''}
+              </p>
+            </div>
+            
+          </div>
+        </div>
+
+        {renderPricingDetails()}
+
+
       </CardContent>
     </Card>
   );
-};
+}
