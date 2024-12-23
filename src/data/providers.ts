@@ -18,7 +18,7 @@ export const speechProviders: Provider[] = [
     id: 'google',
     name: 'Google Cloud',
     type: 'speech',
-    description: 'Google Speech-to-Text Standard Recognition',
+    description: 'Google STT Standard Recognition',
     pricingUrl: 'https://cloud.google.com/speech-to-text/pricing?hl=en',
     tiers: [
       { minutes: 0, pricePerMinute: 0.016 },
@@ -31,7 +31,7 @@ export const speechProviders: Provider[] = [
     id: 'google-logged',
     name: 'Google Cloud (Logged)',
     type: 'speech',
-    description: 'Google Speech-to-Text with Logging',
+    description: 'Google STT with Logging',
     pricingUrl: 'https://cloud.google.com/speech-to-text/pricing?hl=en',
     tiers: [
       { minutes: 0, pricePerMinute: 0.012 },
@@ -40,9 +40,9 @@ export const speechProviders: Provider[] = [
   },
   {
     id: 'openai',
-    name: 'OpenAI',
+    name: 'OpenAI Whisper',
     type: 'speech',
-    description: 'Whisper API',
+    description: 'OpenAI Whisper',
     pricingUrl: 'https://openai.com/api/pricing/',
     tiers: [
       { minutes: 0, pricePerMinute: 0.006 }

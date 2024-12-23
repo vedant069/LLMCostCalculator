@@ -3,8 +3,6 @@ import {
   MessageSquare, 
   Mic, 
   Volume2, 
-  Image as ImageIcon, 
-  Video,
   ChevronLeft,
   ChevronRight,
   Moon,
@@ -32,22 +30,7 @@ export function Sidebar({ activeItem, onItemClick, isCollapsed, setIsCollapsed }
       id: 'llms',
       name: 'LLMs',
       icon: MessageSquare,
-    },
-    {
-      id: 'text-to-speech',
-      name: 'Text to Speech',
-      icon: Volume2,
-    },
-    {
-      id: 'image',
-      name: 'Image Generation',
-      icon: ImageIcon,
-    },
-    {
-      id: 'video',
-      name: 'Video Generation',
-      icon: Video,
-    },
+    }
   ];
 
   return (
