@@ -27,10 +27,10 @@ export const llmProviders: LLMProvider[] = [
           //   name: '2024-12-17',
           //   pricing: { inputPrice: 15.00, outputPrice: 60.00 }
           // },
-          {
-            name: 'preview',
-            pricing: { inputPrice: 15.00, outputPrice: 60.00 }
-          },
+          // {
+          //   name: 'preview',
+          //   pricing: { inputPrice: 15.00, outputPrice: 60.00 }
+          // },
           // {
           //   name: 'preview-2024-09-12',
           //   pricing: { inputPrice: 15.00, outputPrice: 60.00 }
@@ -358,26 +358,26 @@ export const llmProviders: LLMProvider[] = [
     type: 'llm',
     pricingUrl: 'https://groq.com/pricing/',
     models: [
-      {
-        id: 'llama-3-2-1b',
-        name: 'Llama 3.2 1B (Preview) 8k',
-        versions: [
-          {
-            name: 'Default',
-            pricing: { inputPrice: 0.04, outputPrice: 0.04, speed: 3100 }
-          }
-        ]
-      },
-      {
-        id: 'llama-3-2-3b',
-        name: 'Llama 3.2 3B (Preview) 8k',
-        versions: [
-          {
-            name: 'Default',
-            pricing: { inputPrice: 0.06, outputPrice: 0.06, speed: 1600 }
-          }
-        ]
-      },
+      // {
+      //   id: 'llama-3-2-1b',
+      //   name: 'Llama 3.2 1B (Preview) 8k',
+      //   versions: [
+      //     {
+      //       name: 'Default',
+      //       pricing: { inputPrice: 0.04, outputPrice: 0.04, speed: 3100 }
+      //     }
+      //   ]
+      // },
+      // {
+      //   id: 'llama-3-2-3b',
+      //   name: 'Llama 3.2 3B (Preview) 8k',
+      //   versions: [
+      //     {
+      //       name: 'Default',
+      //       pricing: { inputPrice: 0.06, outputPrice: 0.06, speed: 1600 }
+      //     }
+      //   ]
+      // },
       {
         id: 'llama-3-3-70b',
         name: 'Llama 3.3 70B Versatile 128k',
