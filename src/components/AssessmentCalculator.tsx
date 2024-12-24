@@ -11,6 +11,7 @@ import {
 } from "./ui/card";
 import { Label } from "./ui/label";
 import { Input } from './ui/input';
+import { Slider } from './ui/slider';
 import { Brain, Mic, HardDrive, ChevronDown, ChevronUp, Edit2, ShoppingCart, Settings2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
@@ -18,7 +19,9 @@ interface CalculatorState {
   llmModel: string;
   storageProvider: string;
   speechProvider: string;
-  numberOfAssessments: number;
+  numberOfQuestions: number;
+  calculationType: 'questions' | 'assessments';
+  currency: 'USD' | 'INR';
 }
 
 interface FixedParameters {
@@ -34,12 +37,14 @@ export function AssessmentCalculator() {
     llmModel: 'gpt-4o',
     storageProvider: 'aws-s3',
     speechProvider: 'aws',
-    numberOfAssessments: 1
+    numberOfQuestions: 10,
+    calculationType: 'questions',
+    currency: 'USD'
   });
 
   const [fixedParams, setFixedParams] = useState<FixedParameters>({
-    inputWords: 500,
-    outputWords: 500,
+    inputWords: 300,
+    outputWords: 300,
     storageGB: 0.02,
     transferGB: 0.02,
     minutes: 2
@@ -54,7 +59,6 @@ export function AssessmentCalculator() {
   const [totalCost, setTotalCost] = useState<number>(0);
   const [showPricing, setShowPricing] = useState(false);
   const [editingParams, setEditingParams] = useState(false);
-
 
   // Calculate tokens from words
   const INPUT_TOKENS = fixedParams.inputWords * 1.4;
@@ -99,9 +103,11 @@ export function AssessmentCalculator() {
 
     const speechCostPerAssessment = fixedParams.minutes * speechPricing;
 
-    // Total cost for all assessments
-    const total = (llmCostPerAssessment + storageCostPerAssessment + speechCostPerAssessment) * state.numberOfAssessments;
-    
+    // Calculate total cost based on calculation type
+    const total = state.calculationType === 'questions' 
+      ? (llmCostPerAssessment + storageCostPerAssessment + speechCostPerAssessment) * state.numberOfQuestions
+      : (llmCostPerAssessment + storageCostPerAssessment + speechCostPerAssessment) * (state.numberOfQuestions * 10); // 10 questions per assessment
+
     setTotalCost(total);
     setCosts({
       llmCost: llmCostPerAssessment,
@@ -117,11 +123,11 @@ export function AssessmentCalculator() {
   const handleParamChange = (param: keyof FixedParameters, value: string) => {
     const numValue = parseFloat(value) || 0;
     setFixedParams(prev => ({
+
       ...prev,
       [param]: numValue
     }));
   };
-
 
   const renderPricingDetails = () => {
     const selectedStorageProvider = objectStorageProviders.find(
@@ -284,8 +290,8 @@ export function AssessmentCalculator() {
                     <option key={model.id} value={model.id}>
                       {provider.name} - {model.name}
                     </option>
-                  ))
-                )}
+                  )))
+                }
               </select>
             </div>
           </div>
@@ -326,35 +332,101 @@ export function AssessmentCalculator() {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label className="text-sm text-gray-600 dark:text-gray-400">Number of Questions</Label>
-            <Input
-              type="number"
-              min="1"
-              className="border-gray-200 dark:border-gray-700  focus:ring-yellow-500 focus:border-yellow-500"
-              value={state.numberOfAssessments}
-              onChange={(e) => setState({ ...state, numberOfAssessments: parseInt(e.target.value) || 1 })}
-            />
+          <div className="space-y-4">
+            <div className="flex flex-col space-y-4">
+              <div className="flex items-center space-x-4">
+                <Label>Calculate by:</Label>
+                <div className="flex space-x-4">
+                  <button
+                    className={`px-3 py-1 rounded ${state.calculationType === 'questions' ? 'bg-primary text-primary-foreground' : 'bg-secondary'}`}
+                    onClick={() => setState(prev => ({ ...prev, calculationType: 'questions' }))}
+                  >
+                    Questions
+                  </button>
+                  <button
+                    className={`px-3 py-1 rounded ${state.calculationType === 'assessments' ? 'bg-primary text-primary-foreground' : 'bg-secondary'}`}
+                    onClick={() => setState(prev => ({ ...prev, calculationType: 'assessments' }))}
+                  >
+                    Assessments
+                  </button>
+                </div>
+              </div>
+              <div className="flex flex-col space-y-6 w-full p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+                <div className="flex justify-between items-center">
+                  <Label htmlFor="numberOfQuestions" className="text-sm font-medium">
+                    Number of {state.calculationType === 'questions' ? 'Questions' : 'Assessments'}
+                  </Label>
+                  <div className="flex items-center space-x-2">
+                    <Input
+                      type="number"
+                      min="0"
+                      max="100000"
+                      value={state.numberOfQuestions}
+                      onChange={(e) => {
+                        const value = parseInt(e.target.value);
+                        if (!isNaN(value) && value >= 0 && value <= 100000) {
+                          setState(prev => ({ ...prev, numberOfQuestions: value }));
+                        }
+                      }}
+                      className="w-28 text-right"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <Slider
+                    id="numberOfQuestions"
+                    min={0}
+                    max={100000}
+                    step={100}
+                    value={[state.numberOfQuestions]}
+                    onValueChange={(value) => setState(prev => ({ ...prev, numberOfQuestions: value[0] }))}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 px-2">
+                    <span>0</span>
+                    <span>25,000</span>
+                    <span>50,000</span>
+                    <span>75,000</span>
+                    <span>100,000</span>
+                  </div>
+                </div>
+                {state.calculationType === 'assessments' && (
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                    Total questions: {(state.numberOfQuestions * 10).toLocaleString()} (10 questions per assessment)
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-center md:text-left">
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Estimated Cost</p>
+              <div className="flex items-center gap-2 mb-1">
+                <p className="text-sm text-gray-600 dark:text-gray-400">Total Estimated Cost</p>
+                <button
+                  onClick={() => setState(prev => ({ 
+                    ...prev, 
+                    currency: prev.currency === 'USD' ? 'INR' : 'USD' 
+                  }))}
+                  className="px-2 py-1 text-xs rounded-md bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                >
+                  {state.currency}
+                </button>
+              </div>
               <p className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">
-                ${totalCost.toFixed(4)}
+                {state.currency === 'USD' ? '$' : '₹'}{(state.currency === 'USD' ? totalCost : totalCost * 83.33).toFixed(2)}
               </p>
               <p className="text-sm text-gray-500 dark:text-gray-500">
-                For {state.numberOfAssessments} assessment{state.numberOfAssessments > 1 ? 's' : ''}
+                For {state.numberOfQuestions} {state.calculationType === 'questions' ? 'questions' : 'assessments'}
+                {state.calculationType === 'assessments' && ` (${(state.numberOfQuestions * 10).toLocaleString()} total questions)`}
               </p>
             </div>
-            
           </div>
         </div>
 
         {renderPricingDetails()}
-
 
       </CardContent>
     </Card>
